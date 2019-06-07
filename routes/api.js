@@ -1,11 +1,3 @@
-/*
-*
-*
-*       Complete the API routing below
-*       
-*       
-*/
-
 'use strict';
 
 var expect = require('chai').expect;
@@ -37,7 +29,8 @@ module.exports = function (app) {
     })
     
     .post(function (req, res){
-      var title = req.body.title;
+      var title = req.body.title
+      console.log(req.body)
       if(!title){
         res.status(400).json({err: 'No title provided'})
         return
@@ -103,7 +96,7 @@ module.exports = function (app) {
       // console.log('id is >> ', bookid, ' And comment is >>', comment)
       MongoClient.connect(MONGODB_CONNECTION_STRING, { useNewUrlParser: true }, function(err, db) {
         db.db().collection('books')
-        .findOneAndUpdate({_id: new ObjectId(bookid)}, {$push: {comments: comment}}, {returnOriginal: false})
+        .findOneAndUpdate({_id: new ObjectId(bookid)}, {$push: {comments: comment}, $inc: {commentcount: 1}}, {returnOriginal: false})
         .then(doc => {
           // console.log('Doc is updated', doc)
           

@@ -19,6 +19,9 @@
 #userstories {
   margin-left: 5%;
 }
+li{
+  cursor: pointer;
+}
 
 form {
   padding: 5px;
