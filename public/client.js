@@ -3,6 +3,7 @@ var itemsRaw = []
 
 
 function populateBookList(){
+  items = itemsRaw = []
   let display = document.getElementById('display')
   fetch('/api/books')
     .then(res => res.json())
@@ -20,7 +21,6 @@ function populateBookList(){
       ul.innerHTML = items.join('')
 
       // Empty the display first
-      items = itemsRaw = []
       while (display.firstChild){
         console.log(display.firstChild)
         display.removeChild(display.firstChild)
@@ -35,8 +35,7 @@ var display = document.getElementById('display')
 display.addEventListener('click', function(e) {
   if(e.target && e.target.nodeName == "LI") {
     var that = e.target
-    // console.log(this)
-    console.log('On LI')
+    console.log(that)
     document.querySelector("#detailTitle").innerHTML = '<b>'+itemsRaw[that.id].title+'</b> (id: '+itemsRaw[that.id]._id+')'
     fetch('/api/books/' + itemsRaw[that.id]._id)
     .then(resp => resp.json())
@@ -50,22 +49,10 @@ display.addEventListener('click', function(e) {
     })
 
   }
-  // $("#detailTitle").html('<b>'+itemsRaw[this.id].title+'</b> (id: '+itemsRaw[this.id]._id+')')
-  // $.getJSON('/api/books/'+itemsRaw[this.id]._id, function(data) {
-  //   comments = [];
-  //   $.each(data.comments, function(i, val) {
-  //     comments.push('<li>' +val+ '</li>');
-  //   });
-  //   comments.push('<br><form id="newCommentForm"><input style="width:300px" type="text" class="form-control" id="commentToAdd" name="comment" placeholder="New Comment"></form>');
-  //   comments.push('<br><button class="btn btn-info addComment" id="'+ data._id+'">Add Comment</button>');
-  //   comments.push('<button class="btn btn-danger deleteBook" id="'+ data._id+'">Delete Book</button>');
-  //   $('#detailComments').html(comments.join(''));
-  // });
 })
 
-// document.getElementById('bookDetail').addEventListener('click','button.deleteBook',function() {
-document.getElementById('bookDetail').addEventListener('click', function(e){
 
+document.getElementById('bookDetail').addEventListener('click', function(e){
   if(e.target && e.target.className == 'deleteBook'){
     fetch('/api/books/' + this.id, {
       method: 'DELETE'
@@ -80,14 +67,11 @@ document.getElementById('bookDetail').addEventListener('click', function(e){
     fetch('/api/books/' + e.target.id, {
       method: 'POST',
       body: new URLSearchParams(new FormData(document.querySelector('#newCommentForm'))),
-      headers: {
-        'Content-Type': 'application/json'
-      }
     })
     .then(resp => resp.json())
     .then(data => {
-      comments.unshift(newComment); //adds new comment to top of list
-      $('#detailComments').html(comments.join(''))
+      comments.unshift(newComment)
+      document.querySelector('#detailComments').innerHTML = comments.join('')
     })
 
   }
@@ -116,7 +100,7 @@ document.getElementById('newBookForm').addEventListener('submit', function(e){
     body: new URLSearchParams(new FormData(this))
   })
   .then(data => {
-    console.log('Got back', data)
+    // console.log('Got back', data)
     populateBookList()
     this.reset()
   })
